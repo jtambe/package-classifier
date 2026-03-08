@@ -9,8 +9,8 @@ class Package(BaseModel):
     """
     Defines the Package model with validation for dimensions and mass. 
     The following are the reasonable assumptions made for the dimensions and mass of the package:
-    - width, height, length: between 0.0 and 10,000.0 cm
-    - mass: between 0.0 and 1,000.0 kg
+    - width, height, length: greater than 0.0 and less than or equal to 10,000.0 cm
+    - mass: greater than 0.0 and less than or equal to 1,000.0 kg
     """
     width: float = Field(gt=0.0, le=10000)
     height: float = Field(gt=0.0, le=10000)
@@ -28,7 +28,7 @@ class Package(BaseModel):
     def is_bulky(self) -> bool:
         """
         A package is considered bulky if any of its dimensions are greater than or equal to 150 cm, 
-        or if its volume is greater than or equal to 1 cubic meter.
+        or if its volume is greater than or equal to 1,000,000 cm³.
         """
         return (
             self.width >= BULKY_DIMENSION 
