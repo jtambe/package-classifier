@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ValidationError, field_validator, Field
+from pydantic import BaseModel, Field
 from .package_classifications import PackageClassification
 
 HEAVY_MASS = 20.0
@@ -6,25 +6,30 @@ BULKY_DIMENSION = 150.0
 BULKY_VOLUME = 1000000.0
 
 class Package(BaseModel):
-    # reasonable assumptions made for the dimensions and mass of the package:
+    """
+    Defines the Package model with validation for dimensions and mass. 
+    The following are the reasonable assumptions made for the dimensions and mass of the package:
+    - width, height, length: between 0.0 and 10,000.0 cm
+    - mass: between 0.0 and 1,000.0 kg
+    """
     width: float = Field(gt=0.0, le=10000)
     height: float = Field(gt=0.0, le=10000)
     length: float = Field(gt=0.0, le=10000)
     mass: float = Field(gt=0.0, le=1000)
 
-    # @field_validator('width', 'height', 'length', 'mass')
-    # @classmethod
-    # def validate_positive(cls, v, info):
-    #     if v < 0:
-    #         raise ValueError(f'Invalid dimension: {info.field_name} must be non-negative')
-    #     return v
-
     @property
     def is_heavy(self) -> bool:
+        """
+        A package is considered heavy if its mass is greater than or equal to 20 kg.
+        """
         return self.mass >= HEAVY_MASS
 
     @property
     def is_bulky(self) -> bool:
+        """
+        A package is considered bulky if any of its dimensions are greater than or equal to 150 cm, 
+        or if its volume is greater than or equal to 1 cubic meter.
+        """
         return (
             self.width >= BULKY_DIMENSION 
             or self.height >= BULKY_DIMENSION 
@@ -33,6 +38,8 @@ class Package(BaseModel):
         )
                     
     def sort(self) -> PackageClassification:
+        """
+        Classify the package based on its dimensions and mass."""
         heavy = self.is_heavy
         bulky = self.is_bulky
 
