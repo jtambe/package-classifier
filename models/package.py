@@ -39,7 +39,8 @@ class Package(BaseModel):
                     
     def sort(self) -> PackageClassification:
         """
-        Classify the package based on its dimensions and mass."""
+        Classify the package based on its dimensions and mass.
+        """
         heavy = self.is_heavy
         bulky = self.is_bulky
 
